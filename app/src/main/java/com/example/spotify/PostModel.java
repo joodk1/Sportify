@@ -1,80 +1,68 @@
 package com.example.spotify;
 
-import android.graphics.Bitmap;
-
-import java.util.Arrays;
-
 public class PostModel {
-    private int Pid;
-    private String username, caption;
-    byte[] img;
+    private int Pid, userid;
+    private String caption;
+    private String username = "";
+    String img, like;
 
-    public PostModel(String caption, byte[] img) {
+    public PostModel(String caption, String img) {
         this.caption = caption;
         this.img = img;
     }
-    public PostModel(int id, String username, String caption, byte[] img) {
+    public PostModel(int id, int userid, String username,  String caption, String like, String img) {
         this.Pid = id;
+        this.userid = userid;
         this.username = username;
         this.caption = caption;
-        this.img=img;
+        this.like = like;
+        this.img = img;
     }
 
-    public int getId() {
-        return Pid;
+    public String getUsername() {
+        return username;
+    }
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public int getUserid() {
+        return userid;
+    }
+    public void setUserid(int userid) {
+        this.userid = userid;
+    }
+
+    public String getLike() {
+        return like;
+    }
+    public void setLike(String like) {
+        this.like = like;
     }
 
     public void setId(int id) {
         this.Pid = id;
     }
 
-    public String getName() {
-        return username;
-    }
-
-    public void setName(String name) {
-        this.username = name;
-    }
-
     public int getPid() {
         return Pid;
     }
-
     public void setPid(int pid) {
         Pid = pid;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getCaption() {
         return caption;
     }
-
     public void setCaption(String caption) {
         this.caption = caption;
     }
 
-    public byte[] getImg() {
+    public String getImg() {
         return img;
     }
-
-    public void setImg(byte[] img) {
+    public void setImg(String img) {
         this.img = img;
     }
 
-    @Override
-    public String toString() {
-        return "PostModel{" +
-                "Pid=" + Pid +
-                ", username='" + username + '\'' +
-                ", caption='" + caption + '\'' +
-                ", img=" + Arrays.toString(img) +
-                '}';
-    }
 }

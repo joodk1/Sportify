@@ -5,4 +5,7 @@
     <color name="blue">#3C5C83</color>
     <color name="lightPurple">#F2ECF6</color>
 
+    <color name="background">#fffbfe</color>
+    <color name="color_lightblack">#A5A5A5</color>
+
 </resources>

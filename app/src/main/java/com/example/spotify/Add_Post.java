@@ -1,14 +1,12 @@
 package com.example.spotify;
 
+import static com.example.spotify.HelperClass.Constant.getPathFromUri;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -20,22 +18,18 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.bumptech.glide.Glide;
+import com.example.spotify.HelperClass.Constant;
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-import java.io.ByteArrayOutputStream;
-
 public class Add_Post extends Activity {
-    TextView btn_addpost;
-    EditText p_caption;
-    ListView lv_postslist;
-    ImageView p_image;
-    ArrayAdapter<PostModel> postsArrayAdapter;
-    DataBaseHelper dataBaseHelper;
-    Bitmap ImageToStore;
     final static int PICK_IMAGE_REQUEST = 100;
-    Uri ImageFilePath;
+    TextView btn_addpost, txt_title;
+    EditText p_caption;
+    ImageView p_image;
+    DataBaseHelper dataBaseHelper;
     PostModel postmodel;
-    TextView txt_titel;
+    String ImageFilePath = "";
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -46,7 +40,8 @@ public class Add_Post extends Activity {
         btn_addpost = findViewById(R.id.btn_addpost);
         p_caption = findViewById(R.id.p_caption);
         p_image = findViewById(R.id.p_image);
-        txt_titel = findViewById(R.id.txt_titel);
+        txt_title = findViewById(R.id.txt_titel);
+        p_image.setImageResource(R.drawable.image);
 
         dataBaseHelper = new DataBaseHelper(Add_Post.this);
 
@@ -56,22 +51,24 @@ public class Add_Post extends Activity {
                 onBackPressed();
             }
         });
-        get_intentdata();
+        get_intentData();
 
         btn_addpost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                remove_focuse();
+                remove_focus();
                 try {
                     String caption = p_caption.getText().toString().trim();
-                    if (!caption.isEmpty() || ImageToStore != null) {
-                        PostModel postModel = new PostModel(caption, getBytes(ImageToStore));
+                    if (!caption.isEmpty() && ImageFilePath != null) {
+                        PostModel postModel = new PostModel(caption, ImageFilePath);
                         boolean isInserted = false;
-                        if (getIntent().hasExtra("selet_id")) {
+                        if (getIntent().hasExtra("select_id")) {
                             postmodel.setCaption(caption);
-                            postmodel.setImg(getBytes(ImageToStore));
+                            postmodel.setImg(ImageFilePath);
                             isInserted = dataBaseHelper.UpdateOne(postmodel);
                         } else {
+                            postModel.setUserid(Constant.userdata.User_ID);
+                            postModel.setUsername(Constant.userdata.User_Name);
                             isInserted = dataBaseHelper.addOne(postModel);
                         }
 
@@ -83,8 +80,7 @@ public class Add_Post extends Activity {
                             Toast.makeText(Add_Post.this, "Failed to add post", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(Add_Post.this, "Please Enter Image or Caption", Toast.LENGTH_SHORT).show();
-                        return;
+                        Toast.makeText(Add_Post.this, "Please add a picture or text", Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     Toast.makeText(Add_Post.this, "Enter valid input", Toast.LENGTH_SHORT).show();
@@ -93,56 +89,36 @@ public class Add_Post extends Activity {
         });
     }
 
-    private void get_intentdata() {
+    private void get_intentData() {
 
-        if (getIntent().hasExtra("selet_id")) {
+        if (getIntent().hasExtra("select_id")) {
             btn_addpost.setText("Edit post");
-            txt_titel.setText("Edit post");
+            txt_title.setText("Confirm");
 
-            postmodel = dataBaseHelper.get_postdata(getIntent().getIntExtra("selet_id", 0));
+            postmodel = dataBaseHelper.get_postData(getIntent().getIntExtra("select_id", 0));
             if (postmodel.getImg() != null) {
-                if (postmodel.getImg() != null) ImageToStore = getImage(postmodel.getImg());
-                if (ImageToStore != null) p_image.setImageBitmap(ImageToStore);
+                if (postmodel.getImg() != null) {
+                    ImageFilePath = postmodel.getImg();
+                    Glide.with(this).load(ImageFilePath).into(p_image);
+                }
             }
             p_caption.setText(postmodel.getCaption().toString());
         }
     }
 
-    public static Bitmap getImage(byte[] image) {
-        return BitmapFactory.decodeByteArray(image, 0, image.length);
-    }
-
-    public static byte[] getBytes(Bitmap bitmap) {
-        if (bitmap == null) {
-            return null;
-        }
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
-        return stream.toByteArray();
-    }
-
 
     public void ChooseImage(View ObjectView) {
-        remove_focuse();
-       /* try {
-            Intent ObjectIntent = new Intent();
-            ObjectIntent.setType("image/*");
-            ObjectIntent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(ObjectIntent, "Select Image"), PICK_IMAGE_REQUEST);
-        } catch (Exception e) {
-            Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
-        }*/
-
-
+        remove_focus();
         ImagePicker.with(this)
                 .galleryOnly()
                 .compress(500)
                 .crop(1F, 1F)
+                .saveDir(getExternalFilesDir("image"))
                 .maxResultSize(600, 600)
                 .start(PICK_IMAGE_REQUEST);
     }
 
-    public void remove_focuse() {
+    public void remove_focus() {
         p_caption.clearFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(p_caption.getWindowToken(), 0);
@@ -153,9 +129,9 @@ public class Add_Post extends Activity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
             try {
-                ImageFilePath = data.getData();
-                ImageToStore = MediaStore.Images.Media.getBitmap(getContentResolver(), ImageFilePath);
-                p_image.setImageBitmap(ImageToStore);
+
+                ImageFilePath = getPathFromUri(Add_Post.this, data.getData());
+                Glide.with(this).load(ImageFilePath).into(p_image);
             } catch (Exception e) {
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }

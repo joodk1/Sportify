@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context=".MainActivity">
 
@@ -14,23 +14,10 @@
         android:layout_marginHorizontal="20dp"
         android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/search_im"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:background="@color/white"
-            android:contentDescription="Search Icon"
-            android:padding="12dp"
-            android:scaleType="fitCenter"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/search"
-            app:tint="@color/blue" />
-
         <ImageView
             android:id="@+id/logo"
-            android:layout_width="match_parent"
-            android:layout_height="145dp"
+            android:layout_width="226dp"
+            android:layout_height="@dimen/_90sdp"
             android:layout_marginHorizontal="40dp"
             android:layout_weight="1"
             android:contentDescription="Sportify's Logo"
@@ -38,24 +25,46 @@
 
         <ImageButton
             android:id="@+id/btn_add"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
             android:layout_gravity="center"
             android:backgroundTint="#00FFFFFF"
             android:contentDescription="Add Post Icon"
             android:scaleType="fitCenter"
             app:srcCompat="@drawable/addpost" />
 
+        <ImageView
+            android:id="@+id/bt_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/_35sdp"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:padding="@dimen/_7sdp"
+            android:src="@drawable/logout"
+            app:tint="@color/blue" />
+
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/txt_userdata"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="Welcome demo!"
+        android:textColor="@color/black"
+        android:textSize="19sp"
+        android:textStyle="bold" />
+
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_posts"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="584dp"
             android:layout_marginTop="4dp" />
 
         <TextView
@@ -65,65 +74,9 @@
             android:layout_centerInParent="true"
             android:gravity="center"
             android:text="No Posts Added"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
 
     </RelativeLayout>
-
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="401dp"
-        android:layout_height="78dp"
-        android:layout_marginBottom="32dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_posts">
-
-        <ImageButton
-            android:id="@+id/homepage"
-            android:layout_width="90dp"
-            android:layout_height="44dp"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/lightPurple"
-            android:contentDescription="Homepage Icon"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/home"
-            app:tint="@color/blue" />
-
-        <ImageButton
-            android:id="@+id/profile"
-            android:layout_width="90dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="280dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/lightPurple"
-            android:contentDescription="Profile Page Icon"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/profile"
-            app:tint="@color/blue" />
-
-        <ImageButton
-            android:id="@+id/logout"
-            android:layout_width="90dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="@color/lightPurple"
-            android:contentDescription="Logout Icon"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/logout"
-            app:tint="@color/blue" />
-
-    </com.google.android.material.bottomnavigation.BottomNavigationView>
 
 
 </LinearLayout>
