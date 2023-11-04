@@ -59,7 +59,7 @@ public class Add_Post extends Activity {
                 remove_focus();
                 try {
                     String caption = p_caption.getText().toString().trim();
-                    if (!caption.isEmpty() && ImageFilePath != null) {
+                    if (!caption.isEmpty() || ImageFilePath != null) {
                         PostModel postModel = new PostModel(caption, ImageFilePath);
                         boolean isInserted = false;
                         if (getIntent().hasExtra("select_id")) {
